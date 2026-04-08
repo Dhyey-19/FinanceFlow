@@ -6,9 +6,14 @@ A complete personal finance tracker designed to help you manage your money, anal
 *   **Intuitive Dashboard:** Get an overview of your weekly/monthly income and expenses.
 *   **Transaction Management:** Easily add, edit, and delete transactions. Categorize your spending for better insights.
 *   **Categories Administration:** Create and manage custom categories with icons and colors.
-*   **Interactive Charts:** Use robust pie charts and graphs to visualize where your money goes.
-*   **QR Scanner & Sharing:** Scan and share your transaction receipts as full image cards.
-*   **Dark/Light Mode:** Seamlessly toggle your app's theme from the Profile screen.
+*   **Monthly Budget Set:** Set and track custom monthly budgets for specific categories with visual progress bars.
+*   **Savings Goals:** Track and manage personal savings goals and check your progress easily.
+*   **Payment Reminders:** Set up monthly or regular payment reminders so you never forget a bill.
+*   **Data Export:** Securely export your transaction history and financial summaries directly to PDF and CSV formats.
+*   **Sort & Filter:** Advanced custom sorting and filtering options in your transaction history pages.
+*   **Interactive Charts:** Use robust pie charts and dynamic animated graphs to visualize where your money goes.
+*   **QR Scanner & Sharing:** Scan transaction receipts and share them instantly as perfectly styled full-image cards using the camera view.
+*   **Dark/Light Mode:** Seamlessly toggle your app's overarching display theme directly from the Profile screen.
 
 ## 🚀 Setup Instructions
 
