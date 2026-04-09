@@ -200,22 +200,55 @@ eas build -p android --profile preview
 
 ### 📱 Screenshots
 
-The repository includes a set of JPEG screenshots in a `screenshots` folder alongside the project.  
-Below is a sample gallery referencing those existing files:
+The repository includes a full set of screenshots in the `screenshots` folder. The gallery below uses root-relative paths so every image renders correctly on GitHub.
 
-| Dashboard / Overview | Transactions / History |
-| :------------------: | :--------------------: |
-| <img src="../screenshots/ScreenShot (1).jpg" width="260"/> | <img src="../screenshots/ScreenShot (2).jpg" width="260"/> |
-
-| Add / Edit Entry | Summary & Charts |
-| :--------------: | :--------------: |
-| <img src="../screenshots/ScreenShot (3).jpg" width="260"/> | <img src="../screenshots/ScreenShot (4).jpg" width="260"/> |
-
-| Profile & Theme | Categories & Budgets |
-| :-------------: | :------------------: |
-| <img src="../screenshots/ScreenShot (5).jpg" width="260"/> | <img src="../screenshots/ScreenShot (6).jpg" width="260"/> |
-
-> You can adjust which screenshot file maps to which section by renaming or re‑ordering the images in the `screenshots` folder.
+<table>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(1).jpg" width="260" alt="Screenshot 1" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(2).jpg" width="260" alt="Screenshot 2" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(3).jpg" width="260" alt="Screenshot 3" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(4).jpg" width="260" alt="Screenshot 4" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(5).jpg" width="260" alt="Screenshot 5" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(6).jpg" width="260" alt="Screenshot 6" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(7).jpg" width="260" alt="Screenshot 7" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(8).jpg" width="260" alt="Screenshot 8" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(9).jpg" width="260" alt="Screenshot 9" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(10).jpg" width="260" alt="Screenshot 10" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(11).jpg" width="260" alt="Screenshot 11" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(12).jpg" width="260" alt="Screenshot 12" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(13).jpg" width="260" alt="Screenshot 13" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(14).jpg" width="260" alt="Screenshot 14" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(15).jpg" width="260" alt="Screenshot 15" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(16).jpg" width="260" alt="Screenshot 16" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(17).jpg" width="260" alt="Screenshot 17" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(18).jpg" width="260" alt="Screenshot 18" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(19).jpg" width="260" alt="Screenshot 19" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(20).jpg" width="260" alt="Screenshot 20" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(21).jpg" width="260" alt="Screenshot 21" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(22).jpg" width="260" alt="Screenshot 22" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(23).jpg" width="260" alt="Screenshot 23" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(24).jpg" width="260" alt="Screenshot 24" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/ScreenShot%20(25).jpeg" width="260" alt="Screenshot 25" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(26).jpg" width="260" alt="Screenshot 26" /></td>
+    <td align="center"><img src="screenshots/ScreenShot%20(27).jpg" width="260" alt="Screenshot 27" /></td>
+  </tr>
+</table>
 
 ---
 
