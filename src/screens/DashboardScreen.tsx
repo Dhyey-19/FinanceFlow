@@ -487,7 +487,8 @@ export function DashboardScreen() {
           contentContainerStyle={styles.content}
         />
 
-        <Modal visible={showReminderModal} transparent animationType="slide" onRequestClose={() => setShowReminderModal(false)}>
+        {showReminderModal ? (
+        <Modal visible transparent animationType="slide" onRequestClose={() => setShowReminderModal(false)}>
           <View style={styles.modalBackdrop}>
             <View style={[styles.modalCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
               <Text style={[styles.modalTitle, { color: theme.colors.text }]}>Set reminder</Text>
@@ -609,8 +610,10 @@ export function DashboardScreen() {
             </View>
           </View>
         </Modal>
+        ) : null}
 
-        <Modal visible={showQrModal} transparent animationType="fade" onRequestClose={() => setShowQrModal(false)}>
+        {showQrModal ? (
+        <Modal visible transparent animationType="fade" onRequestClose={() => setShowQrModal(false)}>
           <View style={[styles.modalBackdrop, { backgroundColor: 'rgba(0,0,0,0.85)' }]}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', padding: 20 }}>
               {upiId ? (
@@ -685,8 +688,10 @@ export function DashboardScreen() {
             </View>
           </View>
         </Modal>
+        ) : null}
 
-        <Modal visible={showScanner} transparent animationType="slide" onRequestClose={() => setShowScanner(false)}>
+        {showScanner ? (
+        <Modal visible transparent animationType="slide" onRequestClose={() => setShowScanner(false)}>
           <View style={{ flex: 1, backgroundColor: '#000' }}>
             <CameraView
               style={{ flex: 1 }}
@@ -706,6 +711,7 @@ export function DashboardScreen() {
             </View>
           </View>
         </Modal>
+        ) : null}
 
         <Animated.View style={getSectionStyle(5)}>
           <Pressable onPress={() => navigation.navigate('AddEntry')} style={[styles.fab, { backgroundColor: theme.colors.primary }]}>

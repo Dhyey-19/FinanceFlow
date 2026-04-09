@@ -1,10 +1,10 @@
-import { ScreenContainer, useAppDialog } from '../components';
-
 import React from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
+import { useAppDialog } from '../components/AppDialogProvider';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { useAppTheme, useFinance } from '../context/FinanceContext';
 import { Category, TransactionType } from '../types';
 

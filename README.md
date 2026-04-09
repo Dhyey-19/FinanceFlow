@@ -1,219 +1,237 @@
-# FinanceFlow
+## FinanceFlow – Personal Finance Manager
 
-A complete personal finance tracker designed to help you manage your money, analyze your spending habits, and secure your financial future.
+FinanceFlow is a modern, mobile‑first personal finance manager built with **React Native (Expo) + TypeScript**.  
+It helps you track income and expenses, analyze spending patterns, manage budgets and savings goals, and keep everything stored securely on‑device with SQLite.
 
-## ✨ Features
-*   **Intuitive Dashboard:** Get an overview of your weekly/monthly income and expenses.
-*   **Transaction Management:** Easily add, edit, and delete transactions. Categorize your spending for better insights.
-*   **Categories Administration:** Create and manage custom categories with icons and colors.
-*   **Monthly Budget Set:** Set and track custom monthly budgets for specific categories with visual progress bars.
-*   **Savings Goals:** Track and manage personal savings goals and check your progress easily.
-*   **Payment Reminders:** Set up monthly or regular payment reminders so you never forget a bill.
-*   **Data Export:** Securely export your transaction history and financial summaries directly to PDF and CSV formats.
-*   **Sort & Filter:** Advanced custom sorting and filtering options in your transaction history pages.
-*   **Interactive Charts:** Use robust pie charts and dynamic animated graphs to visualize where your money goes.
-*   **QR Scanner & Sharing:** Scan transaction receipts and share them instantly as perfectly styled full-image cards using the camera view.
-*   **Dark/Light Mode:** Seamlessly toggle your app's overarching display theme directly from the Profile screen.
+---
 
-## 🚀 Setup Instructions
+### 📚 Table of Contents
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/Dhyey-19/FinanceFlow.git
-    cd FinanceFlow
-    ```
+- **Project Description**
+- **Features**
+- **Architecture Overview**
+- **Project Structure**
+- **Installation & Setup**
+- **Running & Building**
+- **Screenshots**
+- **Tech Stack**
+- **Notes**
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+---
 
-3.  **Start the Expo server:**
-    ```bash
-    npx expo start
-    ```
+### 🧾 Project Description
 
-4.  **Run the app:**
-    *   Press `a` in the terminal to run on an Android emulator.
-    *   Press `i` in the terminal to open it in Xcode iOS Simulator.
-    *   Alternatively, scan the QR code using the **Expo Go** app on your physical device.
+FinanceFlow is designed as a fintech‑style wallet and expense tracker:
 
-## 📱 Screenshots
-*(Add screenshots inside a "screenshots" folder and replace these placeholders)*
+- Multiple local users with simple PIN‑style auth and optional UPI ID.
+- Categorized income/expense tracking with budgets and savings goals.
+- Rich dashboard with charts, reminders, and quick payment helpers.
+- Local‑first design with no backend dependencies – ideal for offline usage and demos.
 
-| Dashboard | Summary |
-| :---: | :---: |
-| <img src="screenshots/dashboard.png" width="300"/> | <img src="screenshots/summary.png" width="300"/> |
+---
 
-| Profile | Manage Categories |
-| :---: | :---: |
-| <img src="screenshots/profile.png" width="300"/> | <img src="screenshots/manage_categories.png" width="300"/> |
+### ✨ Features
 
-## 🛠 Built With
-*   **React Native / Expo**
-*   **TypeScript**
-*   **SQLite** (Local state)
-*   **React Navigation**
-# FinanceFlow - Finance Manager / Expense Tracker
+- **Authentication & Profiles**
+  - Local email + PIN sign‑in / sign‑up.
+  - Remember‑me support and persisted auth session.
+  - Profile screen with editable name and UPI ID.
 
-A modern fintech-style React Native app built with Expo and TypeScript.
+- **Transactions & History**
+  - Add, edit, and delete income/expense transactions.
+  - Fields: amount, category, type, date, note.
+  - Full transaction history with filters.
+  - Undo/restore for deleted items in context state.
 
-## Features
+- **Categories & Budgets**
+  - Pre‑seeded default categories with icons and colors.
+  - Custom categories (including income/expense types).
+  - Per‑category monthly budgets and actual‑vs‑budget calculations.
 
-- Add income and expense transactions
-- Fields: amount, category, date, note
-- Form validation with user-friendly alerts
-- Predefined categories + custom category creation
-- Category visual distinction via colors and icons
-- Monthly finance summary:
-  - Total income
-  - Total expenses
-  - Remaining balance
-- Gradient balance cards and clean mobile UI
-- Dark/Light mode toggle (persisted locally)
-- Bottom tab navigation with 4 tabs:
-  - Dashboard
-  - Add
-  - Transactions
-  - Settings
-- Animations:
-  - Screen fade/slide transitions
-  - Transaction item reveal animation
-- Keyboard-friendly form UX with `KeyboardAvoidingView`
-- Local-first data persistence using AsyncStorage (no backend)
-- Bonus:
-  - Circular spending summary ring
-  - Smart empty states
+- **Dashboard & Insights**
+  - Dashboard with welcome header and quick stats.
+  - Gradient balance card showing income, expenses, and net balance.
+  - Weekly / monthly charts using `react-native-gifted-charts`.
+  - Circular summary ring and highlight cards.
 
-## Tech Stack
+- **Reminders & Payments**
+  - Payment reminders with frequency and reminder date.
+  - Lightweight “Pay now” helper screen, QR usage, and GPay‑style card export.
 
-- Expo SDK 54
-- React Native + TypeScript
-- React Navigation (Bottom Tabs)
-- AsyncStorage
-- Expo Linear Gradient
-- React Native SVG
+- **Savings & Goals**
+  - Savings goals per user with target amounts.
+  - Simple list and CRUD operations stored in SQLite.
 
-## Project Structure
+- **Theming & UX**
+  - Light / Dark mode toggle stored in settings.
+  - Fintech‑style gradients, cards, and smooth animations.
+  - Keyboard‑aware forms and safe‑area handling.
+
+---
+
+### 🏗 Architecture Overview
+
+- **UI / Navigation**
+  - `App.tsx` defines a **bottom‑tab navigator** (`Dashboard`, `Balance`, `History`, `Summary`, `Profile`) plus hidden routes (`AddEntry`, `EditTransaction`, `PayNow`, `ManageCategories`).
+  - Navigation is driven by `@react-navigation/native` and `@react-navigation/bottom-tabs`.
+  - Global theming is wired into the navigation theme for consistent colors.
+
+- **State Management**
+  - `src/context/FinanceContext.tsx` exposes a `FinanceProvider` and `useFinance` hook.
+  - Central `FinanceState` (users, transactions, categories, budgets, reminders, goals, theme, auth) with a reducer handling actions for all domains.
+  - All screens interact with the app state via this context (e.g., `addTransaction`, `setCategoryBudget`, `addSavingsGoal`, `addReminder`, `signIn`, `signOut`).
+
+- **Persistence Layer**
+  - `src/db/sqliteStorage.ts` handles:
+    - Database initialization and schema migrations.
+    - Seeding default categories and deterministic demo data for users.
+    - CRUD helpers for users, transactions, categories, reminders, budgets, goals, theme, currency, and auth.
+  - Data is stored in a local SQLite database (`financeflow.db`) using `expo-sqlite`.
+
+- **Theming & Design System**
+  - `src/theme/theme.ts` provides a small design system (colors, typography, spacing) and theme modes (`light` / `dark`).
+  - Shared UI primitives such as `ScreenContainer`, `GradientBalanceCard`, `SummaryRing`, `EmptyState`, and `AppDialogProvider` make screens consistent and polished.
+
+- **Screens**
+  - `DashboardScreen`: overview of balances, charts, reminders, and quick actions.
+  - `BalanceScreen`: wallet‑style breakdown of income vs expenses over time.
+  - `TransactionsScreen` (`History` tab): full transaction list and detail navigation.
+  - `SummaryScreen`: analytics and category‑wise summaries.
+  - `ProfileScreen`: theme toggle, profile details, and account actions.
+  - `AddTransactionScreen` / `EditTransactionScreen`: forms for adding/updating entries.
+  - `PaymentScreen`: quick payment helper UI.
+  - `ManageCategoriesScreen`: manage default and custom categories.
+  - `AuthScreen`: sign‑in / sign‑up experience.
+
+---
+
+### 📁 Project Structure
 
 ```text
 FinanceFlow/
   src/
-    components/
-    constants/
-    context/
-    screens/
-    theme/
-    types.ts
-  App.tsx
-  app.json
+    components/        # Shared UI components (cards, dialogs, chart wrappers, etc.)
+    constants/         # Defaults like category definitions
+    context/           # FinanceContext (global state + hooks)
+    db/                # SQLite persistence helpers
+    screens/           # Feature screens (Dashboard, History, Profile, etc.)
+    theme/             # Theme + design tokens
+    types.ts           # Core domain types (Transaction, Category, Budget, User, ...)
+  App.tsx              # Navigation + app shell
+  app.json             # Expo app configuration
+  package.json         # Scripts and dependencies
+  README.md
 ```
 
-## Setup
+---
 
-1. Install Node.js LTS (v20+ recommended).
-2. Install dependencies:
+### ⚙️ Installation & Setup
+
+1. **Prerequisites**
+   - Node.js LTS (v20+ recommended).
+   - Yarn or npm.
+   - Expo CLI (optional) and Android/iOS tooling if you want to run on simulators.
+
+2. **Clone the repository**
+
+```bash
+git clone https://github.com/Dhyey-19/FinanceFlow.git
+cd FinanceFlow
+```
+
+3. **Install dependencies**
 
 ```bash
 npm install
 ```
 
-3. Start development server:
+4. **Start the Metro bundler**
 
 ```bash
 npm run start
 ```
 
-4. Run on device/emulator:
+5. **Run the app**
+
+- Press `a` in the terminal for Android emulator.
+- Press `i` for iOS simulator (on macOS).
+- Or scan the QR code with the **Expo Go** app.
+
+---
+
+### 📦 Running & Building
+
+**Development**
 
 ```bash
-npm run android
-npm run ios
-npm run web
+npm run start          # start Metro bundler
+npm run android        # run with expo run:android
+npm run ios            # run with expo run:ios
+npm run web            # run in browser
 ```
 
-5. Type-check:
+**Type‑checking**
 
 ```bash
 npm run typecheck
 ```
 
-## Build Delivery
+**Android APK (local Gradle build)**
 
-### Android APK (recommended for assignment submission)
+From the project root:
 
-1. Install EAS CLI:
+```bash
+cd android
+./gradlew.bat assembleDebug   # Windows
+```
+
+This produces a debug APK under `android/app/build/outputs/apk/debug/` that already includes the seeded local data from SQLite.
+
+**EAS (hosted) builds** – if you prefer Expo’s cloud builds:
 
 ```bash
 npm install -g eas-cli
-```
-
-2. Login to Expo:
-
-```bash
 eas login
-```
-
-3. Configure EAS in project:
-
-```bash
 eas build:configure
-```
-
-4. Build APK:
-
-```bash
 eas build -p android --profile preview
 ```
 
-The command returns a build URL where you can download the APK.
+---
 
-### Android Play Store Internal Testing (AAB)
+### 📱 Screenshots
 
-```bash
-eas build -p android --profile production
-```
+The repository includes a set of JPEG screenshots in a `screenshots` folder alongside the project.  
+Below is a sample gallery referencing those existing files:
 
-Upload generated `.aab` to Google Play Console -> Internal testing.
+| Dashboard / Overview | Transactions / History |
+| :------------------: | :--------------------: |
+| <img src="../screenshots/ScreenShot (1).jpg" width="260"/> | <img src="../screenshots/ScreenShot (2).jpg" width="260"/> |
 
-### iOS TestFlight (requires Apple Developer account + macOS setup)
+| Add / Edit Entry | Summary & Charts |
+| :--------------: | :--------------: |
+| <img src="../screenshots/ScreenShot (3).jpg" width="260"/> | <img src="../screenshots/ScreenShot (4).jpg" width="260"/> |
 
-```bash
-eas build -p ios --profile production
-```
+| Profile & Theme | Categories & Budgets |
+| :-------------: | :------------------: |
+| <img src="../screenshots/ScreenShot (5).jpg" width="260"/> | <img src="../screenshots/ScreenShot (6).jpg" width="260"/> |
 
-Then submit using:
+> You can adjust which screenshot file maps to which section by renaming or re‑ordering the images in the `screenshots` folder.
 
-```bash
-eas submit -p ios
-```
+---
 
-## Screenshots
+### 🧰 Tech Stack
 
-Add screenshots in a folder named `screenshots/` and reference them here:
+- **React Native** (Expo SDK 54)
+- **TypeScript**
+- **React Navigation** (bottom tabs)
+- **SQLite** via `expo-sqlite` for local persistence
+- **Expo Camera, File System, Sharing, Print** for QR, exports, and utilities
+- **React Native SVG** and **react-native-gifted-charts** for visualizations
 
-- Dashboard
-- Add Transaction
-- Transactions
-- Settings
-- Dark Mode
+---
 
-## Validation Done
+### 📝 Notes
 
-- TypeScript compile check passed:
-
-```bash
-npm run typecheck
-```
-
-## App Identifier
-
-- App Name: `FinanceFlow`
-- Android Package: `it.dtech.financeflow`
-- iOS Bundle Identifier: `it.dtech.financeflow`
-
-## Notes
-
-- All data is stored locally on-device.
-- No backend service is required.
-- Date input uses `YYYY-MM-DD` format for quick manual entry.
+- All data is stored **locally on‑device**; there is no backend dependency.
+- Theme mode, currency, and auth session are persisted in the SQLite database.
+- The app seeds deterministic demo data on first run, so fresh installs (including APK builds) open with meaningful sample transactions and users.

@@ -1,10 +1,10 @@
-import { ScreenContainer, useAppDialog } from '../components';
-
 import React, { useRef, useState } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text, View, Linking, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { useAppDialog } from '../components/AppDialogProvider';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { useAppTheme, useFinance } from '../context/FinanceContext';
 
 type RouteParams = {

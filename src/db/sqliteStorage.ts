@@ -15,6 +15,16 @@ import {
 
 const DB_NAME = 'financeflow.db';
 
+/** Fixed seed so fresh installs (including APK builds) get the same demo transactions every time. */
+function mulberry32(seed: number) {
+  return function next() {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
 type AuthSession = {
@@ -52,16 +62,61 @@ async function getDb() {
   return dbPromise;
 }
 
-function boolToInt(value: boolean) {
-  return value ? 1 : 0;
+function toBoolean(value: unknown): boolean {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'number') {
+    return value === 1;
+  }
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    return normalized === '1' || normalized === 'true';
+  }
+  return false;
 }
 
-function intToBool(value: number | null | undefined) {
-  return value === 1;
+function boolToInt(value: unknown) {
+  return toBoolean(value) ? 1 : 0;
+}
+
+function intToBool(value: unknown) {
+  return toBoolean(value);
 }
 
 export async function initDatabase() {
   const db = await getDb();
+
+  // Create settings table first to check seed version
+  await db.execAsync(`
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY NOT NULL,
+      value TEXT NOT NULL
+    );
+  `);
+
+  let shouldSeed = true;
+  try {
+    const seedCheck = await db.getFirstAsync<{ value: string }>("SELECT value FROM settings WHERE key = 'seed_v4';");
+    if (seedCheck && seedCheck.value === 'true') {
+      shouldSeed = false;
+    }
+  } catch (e) {
+    shouldSeed = true;
+  }
+
+  if (shouldSeed) {
+    // Clear everything out to reset the database and apply new users
+    await db.execAsync(`
+      DROP TABLE IF EXISTS users;
+      DROP TABLE IF EXISTS categories;
+      DROP TABLE IF EXISTS transactions;
+      DROP TABLE IF EXISTS reminders;
+      DROP TABLE IF EXISTS budgets;
+      DROP TABLE IF EXISTS savings_goals;
+      DROP TABLE IF EXISTS auth_session;
+    `);
+  }
 
   try {
     await db.execAsync(`ALTER TABLE users ADD COLUMN upiId TEXT;`);
@@ -181,48 +236,61 @@ export async function initDatabase() {
   }
 
   // --- Seed Dummy Data ---
-  const seedEmail = 'dhyeyshah009@gmail.com';
-  const seedUser = await db.getFirstAsync<{ count: number }>(
-    'SELECT COUNT(*) as count FROM users WHERE email = ?;',
-    seedEmail
+  const seedFlag = await db.getFirstAsync<{ value: string }>(
+    "SELECT value FROM settings WHERE key = 'seed_v4';"
   );
 
-  if (!seedUser || seedUser.count === 0) {
-    // Add User
+  if (!seedFlag || seedFlag.value !== 'true') {
+    // Clear out any old dummy users just in case they exist from an older seed
+    await db.execAsync("DELETE FROM users WHERE email IN ('dhyeyshah009@gmail.com', 'softechit@gmail.com');");
+    
+    // Add Dhyey
     await db.runAsync(
       'INSERT INTO users (email, name, password, upiId) VALUES (?, ?, ?, ?);',
-      seedEmail,
-      'Dhyey Shah',
+      'dhyeyshah009@gmail.com',
+      'Dhyey',
       '0000',
       'dhyeyshah009@okhdfcbank'
     );
 
-    // Generate transactions for 2025 and 2026
-    const start2025 = new Date('2025-01-01T00:00:00Z').getTime();
-    const end2026 = Date.now(); // Up to now
-    const dummyCount = 80;
+    // Add Paras
+    await db.runAsync(
+      'INSERT INTO users (email, name, password, upiId) VALUES (?, ?, ?, ?);',
+      'softechit@gmail.com',
+      'Paras',
+      '0000',
+      '9328110252@kotak'
+    );
 
-    for (let i = 0; i < dummyCount; i++) {
-        const id = 'seed_' + Math.random().toString(36).substring(7) + '_' + i;
-        const randomTime = start2025 + Math.random() * (end2026 - start2025);
+    // Generate transactions for 2025 and 2026 (deterministic per user so APK demos match)
+    const start2025 = new Date('2025-01-01T00:00:00Z').getTime();
+    const endRange = new Date('2026-12-31T23:59:59Z').getTime();
+    const dummyCount = 40; // 40 records per user
+
+    const seedUsers = ['dhyeyshah009@gmail.com', 'softechit@gmail.com'];
+
+    for (let uIdx = 0; uIdx < seedUsers.length; uIdx++) {
+      const u = seedUsers[uIdx];
+      const rand = mulberry32(0xdecaf000 + uIdx * 9973);
+      for (let i = 0; i < dummyCount; i++) {
+        const id = `seed_${uIdx}_${i}`;
+        const randomTime = start2025 + rand() * (endRange - start2025);
         const isoDate = new Date(randomTime).toISOString();
-        
-        // Random Category from defaults
-        const category = DEFAULT_CATEGORIES[Math.floor(Math.random() * DEFAULT_CATEGORIES.length)];
-        
-        // Random amount: bigger for income, smaller for expense
+
+        const category = DEFAULT_CATEGORIES[Math.floor(rand() * DEFAULT_CATEGORIES.length)];
+
         let amount = 0;
         if (category.type === 'income') {
-            amount = Math.floor(Math.random() * 50000) + 15000;
+          amount = Math.floor(rand() * 50000) + 15000;
         } else {
-            amount = Math.floor(Math.random() * 4900) + 100;
+          amount = Math.floor(rand() * 4900) + 100;
         }
 
         await db.runAsync(
           'INSERT INTO transactions (id, amount, userEmail, categoryId, categoryName, categoryColor, categoryIcon, type, date, note, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
           id,
           amount,
-          seedEmail,
+          u,
           category.id,
           category.name,
           category.color,
@@ -230,9 +298,12 @@ export async function initDatabase() {
           category.type,
           isoDate,
           'Dummy ' + category.name + ' record',
-          isoDate
+          isoDate,
         );
+      }
     }
+    
+    await db.runAsync("INSERT OR REPLACE INTO settings (key, value) VALUES ('seed_v4', 'true');");
   }
 }
 
@@ -259,8 +330,8 @@ export async function loadSnapshot(): Promise<FinanceSnapshot> {
   const themeRow = await db.getFirstAsync<{ value: string }>("SELECT value FROM settings WHERE key = 'themeMode' LIMIT 1;");
   const currencyRow = await db.getFirstAsync<{ value: string }>("SELECT value FROM settings WHERE key = 'masterCurrency' LIMIT 1;");
   const authRow = await db.getFirstAsync<{
-    isAuthenticated: number;
-    rememberMe: number;
+    isAuthenticated: number | string;
+    rememberMe: number | string;
     userName: string;
     userEmail: string;
   }>('SELECT isAuthenticated, rememberMe, userName, userEmail FROM auth_session WHERE id = 1 LIMIT 1;');

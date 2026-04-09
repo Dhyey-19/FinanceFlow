@@ -176,10 +176,35 @@ const initialState: FinanceState = {
 
 const FinanceContext = createContext<FinanceContextValue | undefined>(undefined);
 
+function normalizeBoolean(value: unknown): boolean {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value === 1;
+  if (typeof value === 'string') {
+    const v = value.trim().toLowerCase();
+    return v === 'true' || v === '1';
+  }
+  return false;
+}
+
+function normalizeLoadedState(payload: FinanceState): FinanceState {
+  return {
+    ...payload,
+    categories: payload.categories.map((category) => ({
+      ...category,
+      custom: normalizeBoolean(category.custom),
+    })),
+    auth: {
+      ...payload.auth,
+      isAuthenticated: normalizeBoolean(payload.auth.isAuthenticated),
+      rememberMe: normalizeBoolean(payload.auth.rememberMe),
+    },
+  };
+}
+
 function financeReducer(state: FinanceState, action: FinanceAction): FinanceState {
   switch (action.type) {
     case 'LOAD_STATE':
-      return action.payload;
+      return normalizeLoadedState(action.payload);
     case 'ADD_TRANSACTION':
       return {
         ...state,

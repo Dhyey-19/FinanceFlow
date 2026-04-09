@@ -1,5 +1,3 @@
-import { ScreenContainer, useAppDialog } from '../components';
-
 import React from 'react';
 import {
   KeyboardAvoidingView,
@@ -15,6 +13,8 @@ import {
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
+import { useAppDialog } from '../components/AppDialogProvider';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { useAppTheme, useFinance } from '../context/FinanceContext';
 import { Category, TransactionType } from '../types';
 

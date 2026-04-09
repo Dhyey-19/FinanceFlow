@@ -88,16 +88,14 @@ export function SummaryScreen() {
       ) as CategorySummary[],
     }));
 
-    // Sort newest first
     return results.sort((a, b) => b.key.localeCompare(a.key));
   }, [state.transactions, state.auth.userEmail, period]);
 
   const renderChart = () => {
     if (summaryData.length === 0) return null;
-    
+
     const chartData = [...summaryData].slice(0, 6).reverse();
-    
-    // Format data for Gifted Charts
+
     const formattedData = chartData.map((d, i) => {
       const colorPalette = [theme.colors.primary, theme.colors.success, theme.colors.danger, '#0EA5E9', '#F59E0B', '#8B5CF6'];
       return {
@@ -109,13 +107,9 @@ export function SummaryScreen() {
       };
     });
 
-    const maxVal = Math.max(...formattedData.map(d => d.value));
-    
-    // Total horizontal padding is 16 (ScreenContainer) * 2 + 16 (chartContainer) * 2 = 64
-    // We reserve some extra space for the Y-axis labels.
+    const maxVal = Math.max(...formattedData.map((d) => d.value));
     const chartWidth = Dimensions.get('window').width - 100;
 
-    // Dynamic props for scatter/dot variations on LineChart
     const lineConfig = {
       isAnimated: true,
       animationDuration: 1200,
@@ -137,11 +131,10 @@ export function SummaryScreen() {
 
     return (
       <View style={{ marginBottom: 20 }}>
-        {/* Chart Selector */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chartTypeSelector}>
-          {(['bar', 'line', 'pie'] as const).map(type => (
-            <Pressable 
-              key={type} 
+          {(['bar', 'line', 'pie'] as const).map((type) => (
+            <Pressable
+              key={type}
               onPress={() => setChartType(type)}
               style={[styles.chartTypeBtn, chartType === type && { backgroundColor: theme.colors.primary }]}
             >
@@ -195,13 +188,14 @@ export function SummaryScreen() {
 
   const renderPeriodItem = ({ item }: { item: PeriodSummary }) => {
     const handleCardPress = () => {
-      let fromD: Date, toD: Date;
+      let fromD: Date;
+      let toD: Date;
       if (period === 'monthly') {
         const [year, month] = item.key.split('-');
-        fromD = new Date(parseInt(year), parseInt(month) - 1, 1);
-        toD = new Date(parseInt(year), parseInt(month), 0);
+        fromD = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+        toD = new Date(parseInt(year, 10), parseInt(month, 10), 0);
       } else {
-        const year = parseInt(item.key);
+        const year = parseInt(item.key, 10);
         fromD = new Date(year, 0, 1);
         toD = new Date(year, 11, 31);
       }
@@ -222,15 +216,16 @@ export function SummaryScreen() {
 
         {item.categories.map((cat) => {
           const percentage = (cat.amount / item.total) * 100;
-          
+
           const handlePress = () => {
-            let fromD: Date, toD: Date;
+            let fromD: Date;
+            let toD: Date;
             if (period === 'monthly') {
               const [year, month] = item.key.split('-');
-              fromD = new Date(parseInt(year), parseInt(month) - 1, 1);
-              toD = new Date(parseInt(year), parseInt(month), 0);
+              fromD = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+              toD = new Date(parseInt(year, 10), parseInt(month, 10), 0);
             } else {
-              const year = parseInt(item.key);
+              const year = parseInt(item.key, 10);
               fromD = new Date(year, 0, 1);
               toD = new Date(year, 11, 31);
             }
@@ -249,12 +244,12 @@ export function SummaryScreen() {
                 </View>
                 <Text style={[styles.categoryName, { color: theme.colors.text }]}>{cat.name}</Text>
               </View>
-              
+
               <View style={styles.categoryRight}>
                 <Text style={[styles.categoryAmount, { color: theme.colors.text }]}>
                   {formatCurrency(cat.amount)}
                 </Text>
-                
+
                 <View style={styles.progressContainer}>
                   <Text style={[styles.progressText, { color: theme.colors.textMuted }]}>
                     {percentage.toFixed(0)}%
@@ -331,7 +326,7 @@ export function SummaryScreen() {
         </Pressable>
       </View>
 
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingBottom: insets.bottom }}>
         <FlatList
           data={summaryData}
           keyExtractor={(item) => item.key}

@@ -1,5 +1,3 @@
-import { useAppDialog } from '../components';
-
 import React from 'react';
 import {
   Keyboard,
@@ -18,6 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useAppDialog } from '../components/AppDialogProvider';
 import { useAppTheme, useFinance } from '../context/FinanceContext';
 
 type Mode = 'signin' | 'signup';

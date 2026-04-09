@@ -323,7 +323,6 @@ export function ProfileScreen() {
             <View style={[styles.card, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}> 
               <Text style={[styles.title, { color: theme.colors.text }]}>About FinanceFlow</Text>
               <Text style={[styles.helper, { color: theme.colors.textMuted }]}>FinanceFlow is a local-first expense tracker built with React Native and Expo.</Text>
-              <Text style={[styles.helper, { color: theme.colors.textMuted, marginTop: 4 }]}>Version: 1.0.0</Text>
 
 
               <Pressable onPress={onSignOut} style={[styles.signOutBtn, { borderColor: theme.colors.border }]}>
